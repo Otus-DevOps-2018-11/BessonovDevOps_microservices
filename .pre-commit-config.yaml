@@ -1,0 +1,12 @@
+repos:
+- repo: git://github.com/pre-commit/pre-commit-hooks
+  rev: v2.1.0
+  hooks:
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+- repo: https://github.com/ansible/ansible-lint.git
+  rev: v4.1.0a0
+  hooks:
+  - id: ansible-lint
+    exclude: ^(.travis.yml|.*/credentials.yml)$
+    files: \.(yaml|yml)$
