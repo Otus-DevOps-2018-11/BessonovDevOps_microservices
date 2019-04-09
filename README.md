@@ -1,6 +1,6 @@
 # BessonovDevOps_microservices
 BessonovDevOps microservices repository
-## homw work #14 docker-1
+## home work #14 docker-1
 
 1. Описание   
   * Создана ветка docker-1
