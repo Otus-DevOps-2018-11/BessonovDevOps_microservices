@@ -14,3 +14,8 @@ BessonovDevOps microservices repository
 1. Описание
   * создан проект docker в GCP, перенастроено подключение по умолчанию
   * в GCP развернут docker host с использованием docker-machine
+  * для сборки образа docker созданы файлы Dockerfile, mongod.conf, db_config, start.sh
+  * выполнена сборка образа reddit на docker-host в GCP
+  * зарегистрирована учетая запись hub.docker.com (bessonovd)
+  * образ bessonovd/otus-reddit:1.0 сохранен в hub.docker.com
+  * выполнено развертывание приложения в локальном docker
