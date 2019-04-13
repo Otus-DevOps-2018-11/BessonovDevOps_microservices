@@ -19,3 +19,12 @@ BessonovDevOps microservices repository
   * зарегистрирована учетая запись hub.docker.com (bessonovd)
   * образ bessonovd/otus-reddit:1.0 сохранен в hub.docker.com
   * выполнено развертывание приложения в локальном docker
+
+## home work #16 docker-3
+
+1. Описание
+  * создан каталог scr из архива reddit-microservices
+  * в каталогах comment, post-py, ui, созданы Dockerfile для сборки образов контейнеров микросервисной архтектуры
+  * выполнена оптимизация сборки в Dockerfile, синтаксис проверен линтером (docker run --rm -i hadolint/hadolint < ./ui/Dockerfile)
+  * выполнено развертывание контейнеров в отдельной bridge сети reddit
+  * проверена работоспособность приложения
