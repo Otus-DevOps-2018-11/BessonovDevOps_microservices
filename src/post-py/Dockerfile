@@ -13,3 +13,4 @@ RUN pip install --upgrade pip && \
     pip install -r /app/requirements.txt
 
 ENTRYPOINT ["python3", "post_app.py"]
+

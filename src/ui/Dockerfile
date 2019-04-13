@@ -16,3 +16,4 @@ RUN bundle install
 COPY . $APP_HOME
 
 CMD ["puma"]
+
