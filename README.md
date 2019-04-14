@@ -88,4 +88,20 @@ BessonovDevOps microservices repository
     cd /srv/giltab
     docker-compose up -d
   ```
-  
+  * после запуска и настройки gitlab-ci в docker, запщен контейнер gitlab-runner:
+  ```bash
+    docker run -d --name gitlab-runner --restart always \
+    -v /srv/gitlab-runner/config:/etc/gitlab-runner \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    gitlab/gitlab-runner:latest
+  ```
+  * выполнена регистрация раннера в gitlab
+  * выполнено клонирование репозитория reddit, с последующим пушем в gitlab-ci-1
+  * создан конфигурационный файл пайплайна .gitlab-ci.yml
+  * в задание тестирования (test_unit_job:) добавлен вызов файла тестов simpletest.rb,
+  * в Gemfile добавлен модуль 'rack-test'
+  * в stages шаг deploy изменен на review, вы deploy_dev_job: добавлены параметры окружения - name, url
+  * добавлены шаги и задания - staging и production, с запуском по требованию (when: manual)
+  * в задания - staging и production добавлены условия запуска (only: - /^\d+\.\d+\.\d+/)
+  * добавлено динамическое создание окружений branch review:, с условием - only: branches, с исключением ветки master. 
+
