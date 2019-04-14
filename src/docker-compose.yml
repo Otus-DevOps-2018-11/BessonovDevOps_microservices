@@ -11,7 +11,7 @@ services:
     build: ./ui
     env_file:
       - .env
-    image: ${USERNAME}/ui:$(SERVICE_VERSION)
+    image: ${USERNAME}/ui:${SERVICE_VERSION}
     ports:
       - 9292:9292/tcp
     networks:
@@ -20,7 +20,7 @@ services:
     build: ./post-py
     env_file:
       - .env
-    image: ${USERNAME}/post:$(SERVICE_VERSION)
+    image: ${USERNAME}/post:${SERVICE_VERSION}
     networks:
       - front_net
       - back_net
@@ -28,7 +28,7 @@ services:
     build: ./comment
     env_file:
       - .env
-    image: ${USERNAME}/comment:$(SERVICE_VERSION)
+    image: ${USERNAME}/comment:${SERVICE_VERSION}
     networks:
       - front_net
       - back_net
