@@ -73,3 +73,19 @@ BessonovDevOps microservices repository
   * в каталоге src создан docker-compose.yml, при запуске docker-compose up -d, контенеры создаются с префиксом src, который является имененем проекта по умолчанию (каталог в котором хранится файл docker-compose.yml), именеим сервиса и номером контенера, например: src_ui_1. Для переопределения префикса (имени проекта):  ```docker-compose up -d -p $(project_name)```
   * к сервисам в файле docker-compose.yml подключен файл с переменными окружения, с помощью которых задается версия образа, порт, пользователь, добавлено разделение по сетям.
 
+## home work #18 gitlab-ci-1
+1. Описание   
+  * развернут docker-host gitlab-ci:
+  ```bash
+    docker-machine create --driver google \
+    --google-machine-image https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts \
+    --google-machine-type n1-standard-1 \
+    --google-zone europe-west1-b \
+    gitlab-ci
+  ```
+  * созданы рабочие каталоги сервера gitlab-ci, создана конфигурация docker-compose.yml, выполнен запуск
+  ```bash
+    cd /srv/giltab
+    docker-compose up -d
+  ```
+  
