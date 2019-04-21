@@ -139,3 +139,4 @@ BessonovDevOps microservices repository
     * в docker-compose.yml добавлен сервис node-exporter, контейнер prometheus пересобран с job node
     * выполено пересоздание сервисов, выполнена проверка метрики node_load1
     * созданные образы запушены в hub.docker.com https://cloud.docker.com/u/bessonovd/repository/list
+
