@@ -1,4 +1,5 @@
-FROM ruby:2.4-stretch
+#FROM ruby:2.4-stretch
+FROM ruby:2.4.2-stretch
 
 ENV APP_HOME /app \
     POST_SERVICE_HOST post \
