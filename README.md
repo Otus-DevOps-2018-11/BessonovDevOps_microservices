@@ -140,3 +140,33 @@ BessonovDevOps microservices repository
     * выполено пересоздание сервисов, выполнена проверка метрики node_load1
     * созданные образы запушены в hub.docker.com https://cloud.docker.com/u/bessonovd/repository/list
 
+## home work #21 logging-1
+
+1. Описание.
+  * обновлено содержимое каталогов ui, post, comment
+  * выполнена пересборка образова контейнеров с помещением в hub.docker.com
+  
+  ```bash
+    export USER_NAME=bessonovd
+    cd src/ui
+    docker_build.sh && docker push $USER_NAME/ui
+    cd ../src/post-py
+    docker_build.sh && docker push $USER_NAME/post
+    cd ../src/comment
+    docker_build.sh && docker push $USER_NAME/comment
+  ```
+  
+  * создан докер хост с помощью docker-machine:
+  
+  ```bash
+    export GOOGLE_PROJECT=docker-237108
+    docker-machine create --driver google \
+  --google-machine-image https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts \
+  --google-machine-type n1-standard-1 \
+  --google-open-port 5601/tcp \
+  --google-open-port 9292/tcp \
+  --google-open-port 9411/tcp \
+  logging
+  eval $(docker-machine env logging)
+  docker-machine ip logging
+  ```
