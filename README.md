@@ -145,7 +145,7 @@ BessonovDevOps microservices repository
 1. Описание.
   * обновлено содержимое каталогов ui, post, comment
   * выполнена пересборка образова контейнеров с помещением в hub.docker.com
-  
+
   ```bash
     export USER_NAME=bessonovd
     cd src/ui
@@ -155,9 +155,9 @@ BessonovDevOps microservices repository
     cd ../src/comment
     docker_build.sh && docker push $USER_NAME/comment
   ```
-  
+
   * создан докер хост с помощью docker-machine:
-  
+
   ```bash
     export GOOGLE_PROJECT=docker-237108
     docker-machine create --driver google \
@@ -170,3 +170,4 @@ BessonovDevOps microservices repository
   eval $(docker-machine env logging)
   docker-machine ip logging
   ```
+
