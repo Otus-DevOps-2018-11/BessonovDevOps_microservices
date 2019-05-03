@@ -107,36 +107,100 @@ BessonovDevOps microservices repository
 
 ## home work #20 monitoring-1
 1. Описание   
-  * Созданы правила фаервола для prometheus и puma
-  ~~~bash
-    gcloud compute firewall-rules create prometheus-default --allow tcp:9090
-    gcloud compute firewall-rules create puma-default --allow tcp:9292
-  ~~~
+  * Созданы правила фаервола для prometheus и puma   
+
+```bash
+  gcloud compute firewall-rules create prometheus-default --allow tcp:9090
+  gcloud compute firewall-rules create puma-default --allow tcp:9292
+```
+
   * Создадан docker-host в GCP настроено локальное окружение
-  ~~~bash
-    export GOOGLE_PROJECT=docker-123456
+```bash
+  export GOOGLE_PROJECT=docker-123456
+  docker-machine create --driver google \
+  --google-machine-image https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts \
+  --google-machine-type n1-standard-1 \
+  --google-zone europe-west1-b \
+  docker-host
+
+  eval $(docker-machine env docker-host)
+```
+  * выполнент тестовый запуск prometheus
+```bash
+    docker run --rm -p 9090:9090 -d --name prometheus prom/prometheus:v2.1.0
+```
+  * в корене репозитория создан каталог docker, в котрый перемещен каталог docker-monolith, docker-compose
+  * в корне репозитория создан каталог monitoring/prometheus, создан Dockerfile для сборки контейнера prometheus с файлом конфгурации prometheus.yml
+  * выполнена сборка prometheus и микросервисов (в каталоге src/)   
+
+```bash
+    export USER_NAME=bessonovd
+    docker build -t $USER_NAME/prometheus .
+    for i in ui post-py comment; do cd src/$i; bash docker_build.sh; cd -; done
+  ```
+
+  * из файла docker-compose.yml убраны директивы build, добавлен запуск prometheus, добавлены сети front, back
+  * выполнен запуск мкросервисов, с проверкой отслеживания метрик и доступности (ui_health, ui_health_<service-name>)
+  * в docker-compose.yml добавлен сервис node-exporter, контейнер prometheus пересобран с job node
+  * выполено пересоздание сервисов, выполнена проверка метрики node_load1
+  * созданные образы запушены в hub.docker.com https://cloud.docker.com/u/bessonovd/repository/list   
+
+## home work #21 logging-1
+
+1. Описание.
+  * обновлено содержимое каталогов ui, post, comment
+  * выполнена пересборка образова контейнеров с помещением в hub.docker.com
+
+  ```bash
+    export USER_NAME=bessonovd
+    cd src/ui
+    docker_build.sh && docker push $USER_NAME/ui
+    cd ../src/post-py
+    docker_build.sh && docker push $USER_NAME/post
+    cd ../src/comment
+    docker_build.sh && docker push $USER_NAME/comment
+  ```
+
+  * создан докер хост с помощью docker-machine:
+
+  ```bash
+    export GOOGLE_PROJECT=docker-237108
     docker-machine create --driver google \
-    --google-machine-image https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts \
-    --google-machine-type n1-standard-1 \
-    --google-zone europe-west1-b \
-    docker-host
-    eval $(docker-machine env docker-host)
-    ~~~
-    * выполнент тестовый запуск prometheus
-    ~~~bash
-      docker run --rm -p 9090:9090 -d --name prometheus prom/prometheus:v2.1.0
-    ~~~
-    * в корене репозитория создан каталог docker, в котрый перемещен каталог docker-monolith, docker-compose
-    * в корне репозитория создан каталог monitoring/prometheus, создан Dockerfile для сборки контейнера prometheus с файлом конфгурации prometheus.yml
-    * выполнена сборка prometheus и микросервисов (в каталоге src/)
-    ~~~bash
-      export USER_NAME=bessonovd
-      docker build -t $USER_NAME/prometheus .
-      for i in ui post-py comment; do cd src/$i; bash docker_build.sh; cd -; done
-    ~~~
-    * из файла docker-compose.yml убраны директивы build, добавлен запуск prometheus, добавлены сети front, back
-    * выполнен запуск мкросервисов, с проверкой отслеживания метрик и доступности (ui_health, ui_health_<service-name>)
-    * в docker-compose.yml добавлен сервис node-exporter, контейнер prometheus пересобран с job node
-    * выполено пересоздание сервисов, выполнена проверка метрики node_load1
-    * созданные образы запушены в hub.docker.com https://cloud.docker.com/u/bessonovd/repository/list
+  --google-machine-image https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts \
+  --google-machine-type n1-standard-1 \
+  --google-open-port 5601/tcp \
+  --google-open-port 9292/tcp \
+  --google-open-port 9411/tcp \
+  logging
+  eval $(docker-machine env logging)
+  docker-machine ip logging
+  ```
+
+  * в каталоге docker/ создан файл docker-compose-logging.yml с описанием сервисов системы логирования
+  * в каталоге микросервисов src/ создан подкаталог logging/fluetntd/ добавлены файлы конфигурации Dockerfile - для сборки fluentd, с конфигурационным файлом fluent.conf
+  * выполнена сборка образа:
+  ```bash
+    eval $(docker-machine env logging)
+    export USER_NAME=bessonovd
+    docker build -t $USER_NAME/fluentd .
+  ```
+  * в docker-compose.yml, для приложения post добавлена настройка отправки логов во fluentd
+  * выполнен запуск системы логирования и микросервисного приложения:
+  ```bash
+    docker-compose -f docker-compose-logging.yml up -d
+    docker-compose down
+    docker-compose up -d
+  ```
+  * в веб интерфейсе kibana добавлен шаблон индекса flusentd-*, с фильтром штампа времени @timestamp, на вкладке discover проверено поступление логов приложения post
+  * в конфигурационный файл fluent.conf добавлен дополнительный фильтр парсинга параметра log в json формате, выполнена пересборка сервиса мониторинга:
+  ```bash
+    docker build -t $USER_NAME/fluentd .
+    docker-compose -f  docker-compose-logging.yml up -d fluentd
+  ```
+  * после перезапуска сервиса логирования выполнена проверка распарсенного поля log
+  * для возможности разбора неструктурированного лога приложения ui добавлена натройка отправки логов в fluentd, а в конфигурационный файл fluent.conf добавлены grok шаблоны для последовательного парсинга, выполнена пересборка сервиса логирования:
+  ```bash
+    docker-compose -f docker-compose-logging.yml down
+    docker-compose -f docker-compose-logging.yml up -d
+  ```
 
