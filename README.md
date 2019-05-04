@@ -203,4 +203,13 @@ BessonovDevOps microservices repository
     docker-compose -f docker-compose-logging.yml down
     docker-compose -f docker-compose-logging.yml up -d
   ```
+## home work #25 kubernetes-1
+  * в корне репозитория создан каталог kubernetes и подкаталоги reddit, the_hard_way
+  * в каталоге reddit созданы файлы конфигурации pod микросервисов post, ui, comment, mongo
+  * в каталоге the_hard_way конфигурационные файлы выполненных лабораторных "Kubernetes the hard way"
+  * проверена возможность запуска сервисов в созданном кластере kubernetes:
+  ```bash
+    kubectl apply -f post-deployment.yml
+    kubectl get pods
+  ```
 
